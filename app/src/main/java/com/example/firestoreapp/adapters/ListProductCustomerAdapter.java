@@ -92,15 +92,15 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Xác nhận thêm");
                 builder.setMessage("Bạn có muốn thêm vào giỏ hàng?");
-                builder.setPositiveButton("thêm", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Thêm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences sharedPreferences = context.getSharedPreferences("MyID",context.MODE_PRIVATE);
                         String _id = sharedPreferences.getString("id","default_id");
                         Float price = product.getUnit_price();
                         String productRef = product.getId();
-                        Cart cart = new Cart(_id,productRef,1,price);
-                        AddToCart(cart);
+                        Cart cart = new Cart(productRef,1,price);
+                        AddToCart(cart,_id);
                     }
                 });
                 builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -121,10 +121,10 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
     public int getItemCount() {
         return productList.size();
     }
-    private void AddToCart(Cart cart){
+    private void AddToCart(Cart cart, String id){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Cart")
+        db.collection("customer").document(id).collection("Cart")
                 .add(cart)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -139,4 +139,5 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
                     }
                 });
     }
+
 }

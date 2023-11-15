@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.firestoreapp.R;
 import com.example.firestoreapp.fragments.BlankFragment;
+import com.example.firestoreapp.fragments.CartFragment;
 import com.example.firestoreapp.fragments.ListProductFragment;
 import com.example.firestoreapp.fragments.ProductFragment;
 import com.example.firestoreapp.models.User;
@@ -51,9 +52,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId() == R.id.nav_home){
-                    ReplaceFragment(new ListProductFragment());
-                }else if (item.getItemId() == R.id.nav_logout){
                     ReplaceFragment(new ProductFragment());
+                }else if (item.getItemId() == R.id.nav_logout){
+                    ReplaceFragment(new CartFragment());
                 }
 
                 return true;

@@ -2,12 +2,15 @@ package com.example.firestoreapp.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.firestoreapp.Activities.DetailProductActivity;
 import com.example.firestoreapp.R;
 import com.example.firestoreapp.models.Cart;
 import com.example.firestoreapp.models.Product;
@@ -24,6 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProductCustomerAdapter.ProductViewHolder> {
@@ -49,6 +54,7 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
         ImageView imageProduct;
         TextView textProductName, textProductPrice;
         Button btnAddProduct;
+        LinearLayout ItemParentLinear;
 
         public ProductViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
@@ -56,6 +62,7 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
             textProductName = itemView.findViewById(R.id.textProductName);
             textProductPrice = itemView.findViewById(R.id.textProductPrice);
             btnAddProduct = itemView.findViewById(R.id.btnAddProduct);
+            ItemParentLinear = itemView.findViewById(R.id.ItemParentLinear);
 
             btnAddProduct.setOnClickListener(v -> {
                 if (listener != null) {
@@ -116,6 +123,16 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
 
             }
         });
+        holder.ItemParentLinear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailProductActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("product", (Serializable) product);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -123,7 +140,6 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
         return productList.size();
     }
     private void AddToCart(Cart cart, String id){
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("customer").document(id).collection("Cart")
                 .add(cart)

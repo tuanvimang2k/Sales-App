@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@drawable/custom_boder"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="10dp"
+    android:id="@+id/ItemParentLinear">
     <!-- Ảnh sản phẩm -->
     <ImageView
         android:layout_gravity="center"

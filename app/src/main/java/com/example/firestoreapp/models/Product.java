@@ -1,6 +1,8 @@
 package com.example.firestoreapp.models;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private String id;
    private String description;
    private String product_category_name;

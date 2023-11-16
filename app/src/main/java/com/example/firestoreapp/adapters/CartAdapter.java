@@ -35,6 +35,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private ArrayList<Cart> listTemp;
     private float tongTien;
     private TextView txtTongGia;
+
     String _id;
 //    public CartAdapter(Context context, ArrayList<Cart> list) {
 //        this.context = context;

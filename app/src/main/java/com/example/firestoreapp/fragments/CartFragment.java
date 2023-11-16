@@ -23,8 +23,10 @@ import com.example.firestoreapp.adapters.CartAdapter;
 import com.example.firestoreapp.models.Address;
 import com.example.firestoreapp.models.Cart;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -37,9 +39,10 @@ public class CartFragment extends Fragment {
     private RecyclerView recyclerView;
     private CartAdapter cartAdapter;
     private ArrayList<Cart> cartList;
-    TextView txtTongGia;
+    TextView txtTongGia,txtAddress;
     Button BtnDatHang,btnChooseAdress;
     private float tongTien;
+    public static Address addressTemp;
     private ArrayList<Cart> listTemp;
     String _id;
 
@@ -49,6 +52,7 @@ public class CartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         cartList = new ArrayList<>(); // Initialize with your cart items
         recyclerView = view.findViewById(R.id.recyclerView);
+        txtAddress = view.findViewById(R.id.txtAddress);
         txtTongGia = view.findViewById(R.id.txtTongGia);
         btnChooseAdress = view.findViewById(R.id.btnChooseAdress);
         BtnDatHang = view.findViewById(R.id.BtnDatHang);
@@ -56,9 +60,11 @@ public class CartFragment extends Fragment {
         listTemp = new ArrayList<>();
         getListFromFirestore();
 
+        addressTemp = new Address();
         btnChooseAdress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getContext(), ""+addressTemp, Toast.LENGTH_SHORT).show();
                 DialogChooseAdress();
             }
         });
@@ -66,6 +72,8 @@ public class CartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Order(listTemp);
+                txtTongGia.setText("Tổng: ");
+                txtAddress.setText("Địa chỉ :");
             }
         });
 
@@ -109,7 +117,12 @@ public class CartFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         for (Cart cart: listCart) {
             check++;
-            db.collection("Order").add(cart);
+            db.collection("Order").add(cart).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    db.collection("Order").document(documentReference.getId()).collection("Address").add(addressTemp);
+                }
+            });
             db.collection("customer").document(_id).collection("Cart").document(cart.getIDCart()).delete();
             if(check == TongDon){
                 Toast.makeText(getContext(), "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
@@ -164,7 +177,7 @@ public class CartFragment extends Fragment {
                                 Address _addressItem = new Address(address,name,phone);
                                 addressList.add(_addressItem);
                             }
-                            AddressAdapter addressAdapter = new AddressAdapter(getContext(),addressList);
+                            AddressAdapter addressAdapter = new AddressAdapter(getContext(),addressList,txtAddress,addressTemp,dialog);
                             recyclerViewDialogAddress.setLayoutManager(new LinearLayoutManager(getContext()));
                             recyclerViewDialogAddress.setAdapter(addressAdapter);
                         }

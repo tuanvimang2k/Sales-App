@@ -1,6 +1,8 @@
 package com.example.firestoreapp.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +13,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firestoreapp.R;
+import com.example.firestoreapp.fragments.CartFragment;
 import com.example.firestoreapp.models.Address;
+import com.example.firestoreapp.models.Cart;
 
 import java.util.List;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
     private Context context;
     private List<Address> addressList;
-    private TextView txt;
+    private TextView txtAddress;
+    private Address addressTemp;
+    private Dialog dialog;
 
-    public AddressAdapter(Context context, List<Address> addressList) {
+    public AddressAdapter(Context context, List<Address> addressList, TextView txtAddress, Address addressTemp, Dialog dialog) {
         this.context = context;
         this.addressList = addressList;
+        this.txtAddress = txtAddress;
+        this.addressTemp = addressTemp;
+        this.dialog = dialog;
     }
 
     @NonNull
@@ -45,7 +54,11 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         holder.btnAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Xử lý sự kiện ở đây
+                addressTemp = addressItem;
+                txtAddress.setText(addressItem.getAddress());
+                dialog.dismiss();
+                CartFragment.addressTemp = addressItem;
+                Log.d(">>>>>>>>>>>>>>>>>>>>>>>>", " "+addressTemp);
             }
         });
     }

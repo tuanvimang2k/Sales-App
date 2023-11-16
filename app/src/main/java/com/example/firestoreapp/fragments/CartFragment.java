@@ -1,6 +1,7 @@
 // CartFragment.java
 package com.example.firestoreapp.fragments;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firestoreapp.R;
+import com.example.firestoreapp.adapters.AddressAdapter;
 import com.example.firestoreapp.adapters.CartAdapter;
+import com.example.firestoreapp.models.Address;
 import com.example.firestoreapp.models.Cart;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +30,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CartFragment extends Fragment {
 
@@ -34,7 +38,7 @@ public class CartFragment extends Fragment {
     private CartAdapter cartAdapter;
     private ArrayList<Cart> cartList;
     TextView txtTongGia;
-    Button BtnDatHang;
+    Button BtnDatHang,btnChooseAdress;
     private float tongTien;
     private ArrayList<Cart> listTemp;
     String _id;
@@ -46,10 +50,18 @@ public class CartFragment extends Fragment {
         cartList = new ArrayList<>(); // Initialize with your cart items
         recyclerView = view.findViewById(R.id.recyclerView);
         txtTongGia = view.findViewById(R.id.txtTongGia);
+        btnChooseAdress = view.findViewById(R.id.btnChooseAdress);
         BtnDatHang = view.findViewById(R.id.BtnDatHang);
         tongTien = 0;
         listTemp = new ArrayList<>();
         getListFromFirestore();
+
+        btnChooseAdress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogChooseAdress();
+            }
+        });
         BtnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,5 +141,36 @@ public class CartFragment extends Fragment {
                 }
             }
         });
+    }
+    private void DialogChooseAdress(){
+        List<Address> addressList = new ArrayList<>();
+//        addressList.add(new Address("123 Main Street", "John Doe", "555-1234"));
+//        addressList.add(new Address("456 Oak Avenue", "Jane Smith", "555-5678"));
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_list_adress);
+        dialog.show();
+        RecyclerView recyclerViewDialogAddress = dialog.findViewById(R.id.recyclerViewDialogAddress);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("customer").document(_id).collection("Address")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                String address = documentSnapshot.getString("address");
+                                String name = documentSnapshot.getString("name");
+                                String phone = documentSnapshot.getString("phone");
+                                Address _addressItem = new Address(address,name,phone);
+                                addressList.add(_addressItem);
+                            }
+                            AddressAdapter addressAdapter = new AddressAdapter(getContext(),addressList);
+                            recyclerViewDialogAddress.setLayoutManager(new LinearLayoutManager(getContext()));
+                            recyclerViewDialogAddress.setAdapter(addressAdapter);
+                        }
+                    }
+                });
+
+
     }
 }

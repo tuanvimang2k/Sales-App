@@ -9,11 +9,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import com.example.firestoreapp.fragments.ListProductFragment;
 import com.example.firestoreapp.fragments.ProductFragment;
 import com.example.firestoreapp.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -33,6 +37,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
     private static final int FRAGMENT_NEWS = 0;
     private int choseFragment = FRAGMENT_NEWS;
@@ -40,7 +47,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private BottomNavigationView bottom_navigation;
     private NavigationView navigation_view;
     private User user;
-    TextView txtEmail;
+    TextView txtEmail,txtName;
+
+    EditText edtAddress, edtName, edtPhoneNumber;
+    Button btnAddAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,14 +88,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigation_view.getHeaderView(0);
         ImageView imgProfile = headerView.findViewById(R.id.imgProfile);
         txtEmail = headerView.findViewById(R.id.txtEmail);
-        TextView txtName = headerView.findViewById(R.id.txtName);
+        txtName = headerView.findViewById(R.id.txtName);
         TextView txtRole = headerView.findViewById(R.id.txtRole);
-
+        Button btnEdit = headerView.findViewById(R.id.btnEdit);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyID",MODE_PRIVATE);
         String _id = sharedPreferences.getString("id","default_id");
         Toast.makeText(this, ""+_id, Toast.LENGTH_SHORT).show();
         GetUser(_id);
+
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogAddAdress(_id);
+            }
+        });
 
 
 
@@ -142,6 +159,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         _user.setFirst_name(first_name);
                         user = _user;
                         txtEmail.setText(user.getEmail());
+                        if(user.getLast_name()==null){
+                            txtName.setText(user.getFirst_name());
+                        }else{
+                            txtName.setText(""+user.getLast_name()+" "+user.getFirst_name());
+                        }
+
                         Log.d(">>>>>>>>>>>>>>>>USER", "USER: " + _user);
 
                     } else {
@@ -153,6 +176,38 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+    }
+    private void DialogAddAdress(String id){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_adress);
+        dialog.show();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        edtAddress = dialog.findViewById(R.id.edtAddress);
+        edtName = dialog.findViewById(R.id.edtName);
+        edtPhoneNumber = dialog.findViewById(R.id.edtPhoneNumber);
+        btnAddAddress = dialog.findViewById(R.id.btnAddAddress);
+        btnAddAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String,Object> address = new HashMap<>();
+                address.put("name",edtName.getText().toString());
+                address.put("phone",edtPhoneNumber.getText().toString());
+                address.put("address",edtAddress.getText().toString());
+                db.collection("customer").document(id).collection("Address").add(address)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                edtAddress.setText("");
+                                edtName.setText("");
+                                edtPhoneNumber.setText("");
+                                Toast.makeText(HomeActivity.this, "thêm thành công", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                dialog.dismiss();
+            }
+        });
     }
 
 }

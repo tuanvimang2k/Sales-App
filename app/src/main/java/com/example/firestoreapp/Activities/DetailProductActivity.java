@@ -1,8 +1,10 @@
 package com.example.firestoreapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -22,10 +24,15 @@ public class DetailProductActivity extends AppCompatActivity {
     private TextView txtProductName;
     private Button btnBuy;
     private RecyclerView recyclerViewRelatedProducts;
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_product);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Hiển thị nút back
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         Bundle bundle = getIntent().getExtras();
         product = new Product();
         if (bundle != null) {
@@ -38,6 +45,7 @@ public class DetailProductActivity extends AppCompatActivity {
                 // Bây giờ bạn có thể sử dụng đối tượng Product như bình thường
             }
         }
+
         imgProduct = findViewById(R.id.imgProduct);
         txtProductName = findViewById(R.id.txtProductName);
         txtDescription = findViewById(R.id.txtDescription);
@@ -53,4 +61,11 @@ public class DetailProductActivity extends AppCompatActivity {
         txtPrice.setText(String.valueOf(product.getUnit_price()));
 
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
 }

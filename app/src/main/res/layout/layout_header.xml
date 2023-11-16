@@ -31,11 +31,25 @@
         android:layout_height="wrap_content"
         android:text="Nguyen Van A"
         android:layout_marginBottom="10dp"/>
-    <TextView
-        android:textSize="20sp"
-        android:id="@+id/txtRole"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Admin"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp">
+        <TextView
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:id="@+id/txtRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Admin"
+            />
+        <Button
+            android:id="@+id/btnEdit"
+            android:text="Add address"
+            android:backgroundTint="#FF5722"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
 </LinearLayout>

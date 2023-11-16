@@ -99,7 +99,8 @@ public class ListProductCustomerAdapter extends RecyclerView.Adapter<ListProduct
                         String _id = sharedPreferences.getString("id","default_id");
                         Float price = product.getUnit_price();
                         String productRef = product.getId();
-                        Cart cart = new Cart(productRef,1,price);
+                        String name = product.getProduct_name();
+                        Cart cart = new Cart(productRef,name,1,price);
                         AddToCart(cart,_id);
                     }
                 });

@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -30,6 +33,11 @@ public class CartFragment extends Fragment {
     private RecyclerView recyclerView;
     private CartAdapter cartAdapter;
     private ArrayList<Cart> cartList;
+    TextView txtTongGia;
+    Button BtnDatHang;
+    private float tongTien;
+    private ArrayList<Cart> listTemp;
+    String _id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,14 +45,25 @@ public class CartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         cartList = new ArrayList<>(); // Initialize with your cart items
         recyclerView = view.findViewById(R.id.recyclerView);
+        txtTongGia = view.findViewById(R.id.txtTongGia);
+        BtnDatHang = view.findViewById(R.id.BtnDatHang);
+        tongTien = 0;
+        listTemp = new ArrayList<>();
         getListFromFirestore();
+        BtnDatHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Order(listTemp);
+            }
+        });
+
         return view;
     }
 
     private void getListFromFirestore() {
         cartList.clear();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyID", getContext().MODE_PRIVATE);
-        String _id = sharedPreferences.getString("id", "default_id");
+         _id = sharedPreferences.getString("id", "default_id");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference cartCollection = db.collection("customer").document(_id).collection("Cart");
 
@@ -53,18 +72,59 @@ public class CartFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        String IDCart = documentSnapshot.getId();
                         String productRef = documentSnapshot.getString("productRef");
+                        String name = documentSnapshot.getString("name");
+                        Long _quantity = documentSnapshot.getLong("quantity");
+                        Double _unit_price =  documentSnapshot.getDouble("unit_price");
+                        int quantity = _quantity.intValue();
+                        float unit_price = _unit_price.floatValue();
+                        Cart cartItem = new Cart(IDCart,productRef,name, quantity, unit_price);
+                        cartList.add(cartItem);
+//                        Log.d(">>>>>>>>>>>>>>>CartList", "CartList: "+cartItem);
+                    }
+                    cartAdapter = new CartAdapter(requireContext(), cartList,listTemp,tongTien,txtTongGia);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+                    recyclerView.setAdapter(cartAdapter);
+                    cartAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+    private void Order(ArrayList<Cart> listCart){
+        int TongDon = listCart.size();
+        int check =0;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        for (Cart cart: listCart) {
+            check++;
+            db.collection("Order").add(cart);
+            db.collection("customer").document(_id).collection("Cart").document(cart.getIDCart()).delete();
+            if(check == TongDon){
+                Toast.makeText(getContext(), "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
+            }
+        }
+        listTemp.clear();
+//        getListFromFirestore();
+        cartList.clear();
+        FirebaseFirestore _db = FirebaseFirestore.getInstance();
+        CollectionReference cartCollection = _db.collection("customer").document(_id).collection("Cart");
+
+        cartCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        String IDCart = documentSnapshot.getId();
+                        String productRef = documentSnapshot.getString("productRef");
+                        String name = documentSnapshot.getString("name");
                         Long _quantity = documentSnapshot.getLong("quantity");
                         Double _unit_price =  documentSnapshot.getDouble("quantity");
                         int quantity = _quantity.intValue();
                         float unit_price = _unit_price.floatValue();
-                        Cart cartItem = new Cart(productRef, quantity, unit_price);
+                        Cart cartItem = new Cart(IDCart,productRef,name, quantity, unit_price);
                         cartList.add(cartItem);
 //                        Log.d(">>>>>>>>>>>>>>>CartList", "CartList: "+cartItem);
                     }
-                    cartAdapter = new CartAdapter(requireContext(), cartList);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-                    recyclerView.setAdapter(cartAdapter);
                     cartAdapter.notifyDataSetChanged();
                 }
             }

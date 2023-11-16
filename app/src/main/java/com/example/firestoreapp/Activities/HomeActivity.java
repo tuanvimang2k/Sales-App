@@ -89,10 +89,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-//// chuyển thành fragment new khi tạo màn hình.
-//        ReplaceFragment(new NewsFragment());
-//        navigation_view.setCheckedItem(R.id.nav_new);
-//        bottom_navigation.getMenu().findItem(R.id.nav_new).setChecked(true);
+// chuyển thành fragment new khi tạo màn hình.
+        ReplaceFragment(new ProductFragment());
+        navigation_view.setCheckedItem(R.id.nav_home);
+        bottom_navigation.getMenu().findItem(R.id.nav_home).setChecked(true);
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.example.firestoreapp.R;
 import com.example.firestoreapp.fragments.BlankFragment;
 import com.example.firestoreapp.fragments.CartFragment;
 import com.example.firestoreapp.fragments.ListProductFragment;
+import com.example.firestoreapp.fragments.OrderFragment;
 import com.example.firestoreapp.fragments.ProductFragment;
 import com.example.firestoreapp.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -119,7 +120,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home){
             ReplaceFragment(new ListProductFragment());
         }else if (id == R.id.nav_logout){
-            ReplaceFragment(new BlankFragment());
+            ReplaceFragment(new OrderFragment());
         }
 
 
@@ -182,7 +183,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         dialog.setContentView(R.layout.dialog_add_adress);
         dialog.show();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
         edtAddress = dialog.findViewById(R.id.edtAddress);
         edtName = dialog.findViewById(R.id.edtName);

@@ -69,11 +69,11 @@
 
     <!-- RecyclerView để hiển thị danh sách sản phẩm liên quan -->
     <androidx.recyclerview.widget.RecyclerView
-        android:background="@drawable/custom_boder"
         android:id="@+id/recyclerViewRelatedProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="16dp"
+        android:background="@drawable/custom_boder"
         android:padding="16dp" />
 
 </LinearLayout>

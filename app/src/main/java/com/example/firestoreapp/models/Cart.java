@@ -6,6 +6,7 @@ public class Cart {
    private String name;
    private int quantity;
    private float unit_price;
+   private String idCustomer;
 
 
     public Cart() {
@@ -26,6 +27,22 @@ public class Cart {
         this.unit_price = unit_price;
     }
 
+    public Cart(String productRef, String name, int quantity, float unit_price, String idCustomer) {
+        this.productRef = productRef;
+        this.name = name;
+        this.quantity = quantity;
+        this.unit_price = unit_price;
+        this.idCustomer = idCustomer;
+    }
+
+    public Cart(String IDCart, String productRef, String name, int quantity, float unit_price, String idCustomer) {
+        this.IDCart = IDCart;
+        this.productRef = productRef;
+        this.name = name;
+        this.quantity = quantity;
+        this.unit_price = unit_price;
+        this.idCustomer = idCustomer;
+    }
 
     public String getIDCart() {
         return IDCart;
@@ -65,6 +82,14 @@ public class Cart {
 
     public void setUnit_price(float unit_price) {
         this.unit_price = unit_price;
+    }
+
+    public String getIdCustomer() {
+        return idCustomer;
+    }
+
+    public void setIdCustomer(String idCustomer) {
+        this.idCustomer = idCustomer;
     }
 
     @Override

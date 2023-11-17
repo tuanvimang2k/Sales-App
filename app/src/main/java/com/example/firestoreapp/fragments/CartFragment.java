@@ -64,7 +64,6 @@ public class CartFragment extends Fragment {
         btnChooseAdress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), ""+addressTemp, Toast.LENGTH_SHORT).show();
                 DialogChooseAdress();
             }
         });
@@ -99,9 +98,8 @@ public class CartFragment extends Fragment {
                         Double _unit_price =  documentSnapshot.getDouble("unit_price");
                         int quantity = _quantity.intValue();
                         float unit_price = _unit_price.floatValue();
-                        Cart cartItem = new Cart(IDCart,productRef,name, quantity, unit_price);
+                        Cart cartItem = new Cart(IDCart,productRef,name, quantity, unit_price,_id);
                         cartList.add(cartItem);
-//                        Log.d(">>>>>>>>>>>>>>>CartList", "CartList: "+cartItem);
                     }
                     cartAdapter = new CartAdapter(requireContext(), cartList,listTemp,tongTien,txtTongGia);
                     recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

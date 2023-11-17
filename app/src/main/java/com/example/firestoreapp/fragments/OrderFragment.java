@@ -57,11 +57,11 @@ public class OrderFragment extends Fragment {
                         int quantity = (_quantity != null) ? _quantity.intValue() : 0;
                         Double unit_price = documentSnapshot.getDouble("unit_price");
                         String productRef = documentSnapshot.getString("productRef");
-
                         getImageResource(productRef).addOnCompleteListener(imageTask -> {
                             if (imageTask.isSuccessful()) {
                                 String imageResource = imageTask.getResult();
-                                Order order = new Order(name, quantity, unit_price, imageResource);
+//                                String name, int quantity, double price, String imageResource, String idCustomer, String productRef
+                                Order order = new Order(name, quantity, unit_price, imageResource,idCustomer,productRef);
                                 orderList.add(order);
                                 orderAdapter.notifyDataSetChanged();
                             } else {

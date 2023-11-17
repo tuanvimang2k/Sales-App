@@ -1,20 +1,30 @@
 package com.example.firestoreapp.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.firestoreapp.R;
 import com.example.firestoreapp.models.Order;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
 
@@ -46,7 +56,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         holder.btnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Xử lý khi Button được click
+                DialogComment(order.getIdCustomer(),order.getProductRef());
             }
         });
     }
@@ -70,5 +80,38 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             imgProduct = itemView.findViewById(R.id.imgProduct);
             btnComment = itemView.findViewById(R.id.btnComment);
         }
+    }
+    private void DialogComment(String idCustomer,String productRef ){
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_commnent);
+        dialog.show();
+        EditText edtCommnent = dialog.findViewById(R.id.edtCommnent);
+        Button btnCommentDialog = dialog.findViewById(R.id.btnCommentDialog);
+        btnCommentDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String,Object> commentInfo = new HashMap<>();
+                commentInfo.put("Comment",edtCommnent.getText().toString());
+                commentInfo.put("idCustomer",idCustomer);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("Product").document(productRef).collection("Comment")
+                        .add(commentInfo)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Toast.makeText(context, "Comments success", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(context, "Comments fail", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        });
+            }
+        });
+
     }
 }

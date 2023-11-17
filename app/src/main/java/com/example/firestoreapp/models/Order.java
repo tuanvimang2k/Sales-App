@@ -7,6 +7,7 @@ public class Order {
     private double price;
     private String imageResource;
     private String idCustomer;
+    private String productRef;
     public Order() {
     }
 
@@ -23,6 +24,15 @@ public class Order {
         this.price = price;
         this.imageResource = imageResource;
         this.idCustomer = idCustomer;
+    }
+
+    public Order(String name, int quantity, double price, String imageResource, String idCustomer, String productRef) {
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+        this.imageResource = imageResource;
+        this.idCustomer = idCustomer;
+        this.productRef = productRef;
     }
 
     public String getName() {
@@ -63,6 +73,14 @@ public class Order {
 
     public void setIdCustomer(String idCustomer) {
         this.idCustomer = idCustomer;
+    }
+
+    public String getProductRef() {
+        return productRef;
+    }
+
+    public void setProductRef(String productRef) {
+        this.productRef = productRef;
     }
 
     @Override

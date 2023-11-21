@@ -42,6 +42,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Login extends AppCompatActivity {
     Button btnLogin,button2;
     EditText edtEmail,edtPass;
@@ -176,7 +179,7 @@ public class Login extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null){
-            Toast.makeText(Login.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(Login.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -197,7 +200,37 @@ public class Login extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
                                     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                                    Toast.makeText(Login.this, "Đăng nhập thành công"+firebaseUser.getUid(), Toast.LENGTH_SHORT).show();
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    CollectionReference customersCollection = db.collection("customer");
+                                    customersCollection.get()
+                                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                            for (QueryDocumentSnapshot documentSnapshots : queryDocumentSnapshots){
+                                                                if(documentSnapshots.getId().equalsIgnoreCase(firebaseUser.getUid())){
+                                                                    Toast.makeText(Login.this, "login success đã tạo sẵn ", Toast.LENGTH_SHORT).show();
+                                                                    SharedPreferences sharedPreferences = getSharedPreferences("MyID", MODE_PRIVATE);
+                                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                                    editor.putString("id", firebaseUser.getUid());
+                                                                    editor.apply();
+                                                                    startActivity(new Intent(Login.this, HomeActivity.class));
+                                                                    finish();
+                                                                    return;
+                                                                }
+                                                            }
+                                                            Map<String,Object> map = new HashMap<>();
+                                                            map.put("email",user);
+                                                            db.collection("customer").document(firebaseUser.getUid()).set(map);
+                                                            SharedPreferences sharedPreferences = getSharedPreferences("MyID", MODE_PRIVATE);
+                                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                            editor.putString("id", firebaseUser.getUid());
+                                                            editor.apply();
+                                                            startActivity(new Intent(Login.this, HomeActivity.class));
+                                                            Toast.makeText(Login.this, "login success vừa tạo nè", Toast.LENGTH_SHORT).show();
+                                                            finish();
+                                                        }
+                                                    });
+//                                    Toast.makeText(Login.this, "Đăng nhập thành công"+firebaseUser.getUid(), Toast.LENGTH_SHORT).show();
                                 }else {
                                     Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +55,7 @@ public class Login extends AppCompatActivity {
     private SignInClient oneTapClient;
     private BeginSignInRequest signInRequest;
     private boolean showOneTapUI = true;
-
+    private ProgressBar progressBar ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +66,8 @@ public class Login extends AppCompatActivity {
         txtRegister = findViewById(R.id.txtRegister);
         button2 = findViewById(R.id.button2);
         btnLogout = findViewById(R.id.btnLogout);
-
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
         oneTapClient = Identity.getSignInClient(this);
         signInRequest = BeginSignInRequest.builder()
                 .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
@@ -94,7 +96,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = client.getSignInIntent();
                 startActivityForResult(i,1000);
-
+                progressBar.setVisibility(View.VISIBLE);
 
 
 //                oneTapClient.beginSignIn(signInRequest)
@@ -127,6 +129,7 @@ public class Login extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 CheckData();
             }
         });
@@ -160,6 +163,7 @@ public class Login extends AppCompatActivity {
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putString("id", documentSnapshots.getId());
                                     editor.apply();
+                                    progressBar.setVisibility(View.GONE);
                                     finish();
                                     return;
                                 }
@@ -215,6 +219,7 @@ public class Login extends AppCompatActivity {
                                                                     editor.putString("id", firebaseUser.getUid());
                                                                     editor.apply();
                                                                     startActivity(new Intent(Login.this, HomeActivity.class));
+                                                                    progressBar.setVisibility(View.GONE);
                                                                     finish();
                                                                     return;
                                                                 }
@@ -228,6 +233,7 @@ public class Login extends AppCompatActivity {
                                                             editor.apply();
                                                             startActivity(new Intent(Login.this, HomeActivity.class));
                                                             Toast.makeText(Login.this, "login success vừa tạo nè", Toast.LENGTH_SHORT).show();
+                                                            progressBar.setVisibility(View.GONE);
                                                             finish();
                                                         }
                                                     });

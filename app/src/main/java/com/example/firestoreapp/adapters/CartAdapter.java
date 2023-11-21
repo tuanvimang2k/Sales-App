@@ -83,7 +83,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                     public void onClick(DialogInterface dialog, int which) {
                         // Thực hiện xóa tài liệu
                         DeleteCartItem(_id,currentItem.getIDCart());
-
                     }
                 });
                 builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {

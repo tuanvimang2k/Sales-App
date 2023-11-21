@@ -137,6 +137,7 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
             }
         });
+        btnLogout.setVisibility(View.INVISIBLE);
 
     }
 

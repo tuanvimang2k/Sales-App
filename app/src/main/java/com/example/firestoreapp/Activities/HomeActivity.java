@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.firestoreapp.Login;
 import com.example.firestoreapp.R;
 import com.example.firestoreapp.fragments.BlankFragment;
 import com.example.firestoreapp.fragments.CartFragment;
@@ -34,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -117,10 +120,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_home){
+        if (id == R.id.menu_manager){
             ReplaceFragment(new ListProductFragment());
-        }else if (id == R.id.nav_logout){
+        }else if (id == R.id.menu_order){
             ReplaceFragment(new OrderFragment());
+        } else if (id == R.id.menu_logout) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(HomeActivity.this,Login.class));
+            Toast.makeText(HomeActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+
         }
 
 

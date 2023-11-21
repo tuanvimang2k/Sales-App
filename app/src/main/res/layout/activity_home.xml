@@ -53,7 +53,7 @@
         android:layout_height="match_parent"
         app:headerLayout="@layout/layout_header"
         android:layout_gravity="start"
-        app:menu="@menu/menu_nav"/>
+        app:menu="@menu/menu_nav2"/>
 
 
 

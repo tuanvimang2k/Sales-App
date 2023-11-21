@@ -213,7 +213,7 @@ public class Login extends AppCompatActivity {
                                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                                             for (QueryDocumentSnapshot documentSnapshots : queryDocumentSnapshots){
                                                                 if(documentSnapshots.getId().equalsIgnoreCase(firebaseUser.getUid())){
-                                                                    Toast.makeText(Login.this, "login success đã tạo sẵn ", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(Login.this, "login success", Toast.LENGTH_SHORT).show();
                                                                     SharedPreferences sharedPreferences = getSharedPreferences("MyID", MODE_PRIVATE);
                                                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                                                     editor.putString("id", firebaseUser.getUid());
@@ -232,7 +232,7 @@ public class Login extends AppCompatActivity {
                                                             editor.putString("id", firebaseUser.getUid());
                                                             editor.apply();
                                                             startActivity(new Intent(Login.this, HomeActivity.class));
-                                                            Toast.makeText(Login.this, "login success vừa tạo nè", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(Login.this, "login success", Toast.LENGTH_SHORT).show();
                                                             progressBar.setVisibility(View.GONE);
                                                             finish();
                                                         }

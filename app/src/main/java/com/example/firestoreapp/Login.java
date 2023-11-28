@@ -162,6 +162,7 @@ public class Login extends AppCompatActivity {
                                     SharedPreferences sharedPreferences = getSharedPreferences("MyID", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putString("id", documentSnapshots.getId());
+                                    editor.putBoolean("check", false);
                                     editor.apply();
                                     progressBar.setVisibility(View.GONE);
                                     finish();
@@ -217,6 +218,7 @@ public class Login extends AppCompatActivity {
                                                                     SharedPreferences sharedPreferences = getSharedPreferences("MyID", MODE_PRIVATE);
                                                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                                                     editor.putString("id", firebaseUser.getUid());
+                                                                    editor.putBoolean("check", false);
                                                                     editor.apply();
                                                                     startActivity(new Intent(Login.this, HomeActivity.class));
                                                                     progressBar.setVisibility(View.GONE);
@@ -230,6 +232,7 @@ public class Login extends AppCompatActivity {
                                                             SharedPreferences sharedPreferences = getSharedPreferences("MyID", MODE_PRIVATE);
                                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                                             editor.putString("id", firebaseUser.getUid());
+                                                            editor.putBoolean("check", false);
                                                             editor.apply();
                                                             startActivity(new Intent(Login.this, HomeActivity.class));
                                                             Toast.makeText(Login.this, "login success", Toast.LENGTH_SHORT).show();

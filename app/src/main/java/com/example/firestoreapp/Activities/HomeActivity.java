@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -62,6 +63,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         user = new User();
         bottom_navigation = findViewById(R.id.bottom_navigation);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MyID",MODE_PRIVATE);
+        String _id = sharedPreferences.getString("id","default_id");
+        boolean check = sharedPreferences.getBoolean("check",false);
+        Toast.makeText(this, ""+check, Toast.LENGTH_SHORT).show();
+        GetUser(_id);
         bottom_navigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -96,10 +102,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         TextView txtRole = headerView.findViewById(R.id.txtRole);
         Button btnEdit = headerView.findViewById(R.id.btnEdit);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MyID",MODE_PRIVATE);
-        String _id = sharedPreferences.getString("id","default_id");
-        Toast.makeText(this, ""+_id, Toast.LENGTH_SHORT).show();
-        GetUser(_id);
+
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +111,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+//        Ẩn item mong muốn trong navigation
+//        Menu navMenu = navigation_view.getMenu();
+//        MenuItem logoutItem = navMenu.findItem(R.id.menu_logout);
+//        logoutItem.setVisible(false);
 
+//        ẩn item trong bottom nav
+//        Menu botMenu = bottom_navigation.getMenu();
+//        MenuItem nav_logout = botMenu.findItem(R.id.nav_logout);
+//        nav_logout.setVisible(false);
 
 // chuyển thành fragment new khi tạo màn hình.
         ReplaceFragment(new ProductFragment());
